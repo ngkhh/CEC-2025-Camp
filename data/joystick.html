@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ESP32 Dual Joystick</title>
+  <script src="/virtualjoystick.js"></script>
+  <style>
+    body {
+      background: #222;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 50px;
+    }
+    canvas {
+      border: 2px solid #555;
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>ESP32 Dual Joystick Control</h1>
+  <div id="container">
+    <div>
+      <h3>Orange</h3>
+      <canvas id="joy1" width="200" height="200"></canvas>
+    </div>
+    <div>
+      <h3>Cyan</h3>
+      <canvas id="joy2" width="200" height="200"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const joy1 = new VirtualJoystick({
+      container: document.getElementById('joy1'),
+      mouseSupport: true
+    });
+
+    const joy2 = new VirtualJoystick({
+      container: document.getElementById('joy2'),
+      mouseSupport: true
+    });
+
+    function sendData() {
+      const x1 = Math.round(joy1.deltaX());
+      const y1 = Math.round(joy1.deltaY());
+      const x2 = Math.round(joy2.deltaX());
+      const y2 = Math.round(joy2.deltaY());
+
+      const url = `/jsData?x1=${x1}&y1=${y1}&x2=${x2}&y2=${y2}`;
+      fetch(url).catch(err => console.log("Send error:", err));
+    }
+
+    setInterval(sendData, 100); // send every 100ms
+  </script>
+</body>
+</html>
